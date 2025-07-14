@@ -1,43 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css
-  https://cdn.jsdelivr.net/npm/chart.js
-  https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js
-  
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📊 Project Load Visualizer</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project Load Visualizer</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>📁 Project Load Visualizer</h1>
+  <div class="container">
+    <h1>Project Load Visualizer</h1>
 
-  <form id="filterForm" class="filter-section">
-    <label for="pmSelect">👥 Select Project Manager:</label>
-    <select id="pmSelect" placeholder="Type to search..."></select>
+    <!-- Dropdowns -->
+    <div class="filters">
+      <select id="pmSelect" required>
+        <option value="">Select Project Manager</option>
+      </select>
 
-    <label for="fySelect">📆 Select Fiscal Year:</label>
-    <select id="fySelect"></select>
+      <select id="fySelect" required>
+        <option value="">Select Fiscal Year</option>
+      </select>
+    </div>
 
-    <button type="submit">🔍 Load Projects</button>
-  </form>
-
-  <div class="charts-container">
-    <canvas id="workloadBarChart"></canvas>
-    <canvas id="workloadPieChart"></canvas>
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="projectPieChart" width="400" height="400"></canvas>
+    </div>
   </div>
-
-  <div id="projectsContainer" class="projects-container"></div>
-  <div id="statusMessage" class="status-message"></div>
-
-  <form id="createForm" class="new-project-section">
-    <h2>➕ Create New Project</h2>
-    <input type="text" id="newProjectName" placeholder="New Project Name" required />
-    <label for="newProjectPmSelect">👤 Assign to PM:</label>
-    <select id="newProjectPmSelect"></select>
-    <button type="button" id="createProjectBtn">✅ Create Project</button>
-  </form>
 
   <script src="script.js"></script>
 </body>
