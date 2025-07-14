@@ -1,149 +1,108 @@
-// script.js
-const API_BASE = 'https://project-management-load-balancer.siphosihle-tsotsa.workers.dev/api';
-const pmSelect = document.getElementById('pmSelect');
-const fySelect = document.getElementById('fySelect');
-const projectsContainer = document.getElementById('projectsContainer');
-const newProjectNameInput = document.getElementById('newProjectName');
-const newProjectPmSelect = document.getElementById('newProjectPmSelect');
-const createProjectBtn = document.getElementById('createProjectBtn');
-const statusMessage = document.getElementById('statusMessage');
-const workloadPieCanvas = document.getElementById('workloadPieChart').getContext('2d');
-const workloadBarCanvas = document.getElementById('workloadBarChart').getContext('2d');
-let allProjects = [];
-let pieChart, barChart;
-function getFiscalYearRange(fy) {
- const match = fy.match(/FY (\d{2})\/(\d{2})/);
- if (!match) return [null, null];
- const startYear = 2000 + parseInt(match[1]);
- const endYear = 2000 + parseInt(match[2]);
- return [`${startYear}-03-01`, `${endYear}-02-28`];
-}
+const backendURL = "https://project-management-load-balancer.siphosihle-tsotsa.workers.dev";
+
+// Elements
+const pmSelect = document.getElementById("pmSelect");
+const fySelect = document.getElementById("fySelect");
+const canvas = document.getElementById("projectPieChart");
+const ctx = canvas.getContext("2d");
+
+let pieChart;
+
+// 1️⃣ Fetch Project Managers
 async function fetchPMs() {
- const res = await fetch(`${API_BASE}/pms`);
- const pmList = await res.json();
- pmSelect.innerHTML = '';
- newProjectPmSelect.innerHTML = '';
- pmList.forEach(pm => {
-   const opt1 = new Option(pm, pm);
-   const opt2 = new Option(pm, pm);
-   pmSelect.appendChild(opt1);
-   newProjectPmSelect.appendChild(opt2);
- });
+  const res = await fetch(`${backendURL}/api/pms?search=`);
+  const data = await res.json();
+  pmSelect.innerHTML = '<option value="">Select Project Manager</option>';
+
+  data.forEach(pm => {
+    const option = document.createElement("option");
+    option.value = pm;
+    option.textContent = pm;
+    pmSelect.appendChild(option);
+  });
 }
-async function fetchProjects() {
- const selectedPm = pmSelect.value;
- const fy = fySelect.value;
- const [start, end] = getFiscalYearRange(fy);
- statusMessage.textContent = 'Fetching projects...';
- const res = await fetch(`${API_BASE}/projects`, {
-   method: 'POST',
-   headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({
-     pmNames: [selectedPm],
-     start,
-     end,
-   }),
- });
- const data = await res.json();
- allProjects = data;
- renderProjectsList(data);
- renderWorkloadCharts(data);
- statusMessage.textContent = `${data.length} projects loaded for ${selectedPm}`;
+
+// 2️⃣ Build FY Options (March–Feb)
+function buildFYOptions() {
+  const currentYear = new Date().getFullYear();
+  for (let i = -1; i <= 2; i++) {
+    const start = new Date(currentYear + i, 2, 1);  // March 1
+    const end = new Date(currentYear + i + 1, 1, 28); // Feb 28
+    const label = `FY ${start.getFullYear()}/${end.getFullYear().toString().slice(-2)}`;
+    const option = document.createElement("option");
+    option.value = JSON.stringify({ start: start.toISOString(), end: end.toISOString() });
+    option.textContent = label;
+    fySelect.appendChild(option);
+  }
 }
-async function createProject() {
- const name = newProjectNameInput.value.trim();
- const owner = newProjectPmSelect.value;
- if (!name || !owner) {
-   alert('Enter both project name and PM.');
-   return;
- }
- statusMessage.textContent = 'Creating project...';
- const res = await fetch(`${API_BASE}/create`, {
-   method: 'POST',
-   headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({ name, owner }),
- });
- const created = await res.json();
- statusMessage.textContent = `✅ Project "${created.name}" created successfully`;
- await fetchProjects();
- newProjectNameInput.value = '';
+
+// 3️⃣ Fetch Projects and Build Chart
+async function fetchAndRenderProjects() {
+  const selectedPM = pmSelect.value;
+  const fyRange = fySelect.value;
+
+  if (!selectedPM || !fyRange) return;
+
+  const { start, end } = JSON.parse(fyRange);
+  const res = await fetch(`${backendURL}/api/projects`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      pmNames: [selectedPM],
+      start,
+      end,
+    }),
+  });
+
+  const data = await res.json();
+
+  const projectCounts = {};
+  data.forEach(proj => {
+    const owner = proj.owner || "Unassigned";
+    projectCounts[owner] = (projectCounts[owner] || 0) + 1;
+  });
+
+  const labels = Object.keys(projectCounts);
+  const values = Object.values(projectCounts);
+  const colors = labels.map((_, i) => `hsl(${i * 70}, 70%, 60%)`);
+
+  const chartData = {
+    labels,
+    datasets: [{
+      label: "Project Load",
+      data: values,
+      backgroundColor: colors,
+      borderColor: "#fff",
+      borderWidth: 2,
+    }],
+  };
+
+  if (pieChart) {
+    pieChart.data = chartData;
+    pieChart.update();
+  } else {
+    pieChart = new Chart(ctx, {
+      type: "pie",
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.label}: ${context.raw} project(s)`,
+            },
+          },
+        },
+      },
+    });
+  }
 }
-function populateFiscalYears() {
- const currentYear = new Date().getFullYear() % 100;
- for (let i = currentYear - 2; i <= currentYear + 3; i++) {
-   const next = (i + 1).toString().padStart(2, '0');
-   const label = `FY ${i}/${next}`;
-   const option = new Option(label, label);
-   fySelect.appendChild(option);
- }
- fySelect.value = `FY ${currentYear}/${(currentYear + 1).toString().padStart(2, '0')}`;
-}
-function renderProjectsList(projects) {
- projectsContainer.innerHTML = '';
- if (!projects.length) {
-   projectsContainer.innerHTML = '<em>No projects found.</em>';
-   return;
- }
- const ul = document.createElement('ul');
- projects.forEach(p => {
-   const li = document.createElement('li');
-   li.textContent = `${p.Name} | Start: ${p.StartDate?.slice(0, 10)} | Status: ${p.OverallStatus}`;
-   ul.appendChild(li);
- });
- projectsContainer.appendChild(ul);
-}
-function renderWorkloadCharts(projects) {
- const pmWorkload = {};
- projects.forEach(p => {
-   const start = new Date(p.StartDate);
-   const end = new Date(p.EndDate);
-   const days = (end - start) / (1000 * 60 * 60 * 24) + 1;
-   const owner = p.OwnerName?.trim() || 'Unassigned';
-   pmWorkload[owner] = (pmWorkload[owner] || 0) + days;
- });
- const labels = Object.keys(pmWorkload);
- const data = Object.values(pmWorkload);
- if (pieChart) pieChart.destroy();
- if (barChart) barChart.destroy();
- pieChart = new Chart(workloadPieCanvas, {
-   type: 'pie',
-   data: {
-     labels,
-     datasets: [{
-       data,
-       backgroundColor: labels.map(() => randomColor()),
-     }],
-   },
-   options: { plugins: { legend: { position: 'bottom' } } },
- });
- barChart = new Chart(workloadBarCanvas, {
-   type: 'bar',
-   data: {
-     labels,
-     datasets: [{
-       label: 'Workload (days)',
-       data,
-       backgroundColor: labels.map(() => randomColor()),
-     }],
-   },
-   options: {
-     scales: { y: { beginAtZero: true } },
-     plugins: { legend: { display: false } },
-   },
- });
-}
-function randomColor() {
- const r = Math.floor(150 + Math.random() * 100);
- const g = Math.floor(150 + Math.random() * 100);
- const b = Math.floor(150 + Math.random() * 100);
- return `rgba(${r},${g},${b},0.7)`;
-}
-pmSelect.addEventListener('change', fetchProjects);
-fySelect.addEventListener('change', fetchProjects);
-createProjectBtn.addEventListener('click', createProject);
-async function init() {
- populateFiscalYears();
- await fetchPMs();
- await fetchProjects();
-}
-init();
+
+// 4️⃣ Event Listeners
+pmSelect.addEventListener("change", fetchAndRenderProjects);
+fySelect.addEventListener("change", fetchAndRenderProjects);
+
+// 5️⃣ Init
+fetchPMs();
+buildFYOptions();
