@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     fySelect.appendChild(option);
   }
 
-  const pmSelect = document.getElementById('pmSelect');
-  const pmSearch = document.getElementById('pmSearch');
+  const pmInput = document.getElementById('pmSelect');
+  const pmList = document.getElementById('pmList');
 
   // Optional: fetchPMs if you add /api/pms to your Worker
   async function fetchPMs(search = "") {
@@ -21,10 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`/api/pms?search=${encodeURIComponent(search)}`);
       if (!res.ok) throw new Error("PMs not found");
       const pms = await res.json();
-      pmSelect.innerHTML = "";
+      pmList.innerHTML = "";
       pms.forEach(pm => {
-        const option = new Option(pm, pm);
-        pmSelect.appendChild(option);
+        const option = document.createElement("option");
+        option.value = pm;
+        pmList.appendChild(option);
       });
     } catch (err) {
       console.error("PM fetch error:", err.message);
@@ -34,14 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial load (optional)
   // fetchPMs();
 
-  // Search handler (optional)
-  // pmSearch.addEventListener("input", (e) => {
-  //   fetchPMs(e.target.value);
-  // });
-
   document.getElementById("filterForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const pmNames = Array.from(pmSelect.selectedOptions).map(o => o.value);
+    const pmNames = [pmInput.value.trim()];
     const [start, end] = fySelect.value.split(',');
 
     try {
