@@ -22,9 +22,10 @@
 
 <form id="filterForm">
 
-<label for="pmSelect">👥 Select Project Managers:</label>
+<label for="pmSelect">👥 Select Project Managers:</label> <!-- This helps you select the project managers chosen from a choice of who shows up.-->
 
-<select id="pmSelect" multiple></select>
+<input type="text" id="pmSelect" list="pmList" placeholder="Type to search Project Managers..." autocomplete="on" />
+<datalist id="pmList"></datalist>
 
 <label for="fySelect">📆 Select Fiscal Year:</label>
 
