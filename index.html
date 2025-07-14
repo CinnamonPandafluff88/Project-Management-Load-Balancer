@@ -1,53 +1,34 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-<head> 
-
+<head>
 <meta charset="UTF-8" />
-
-<title>📊 Project Load Balancer</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>📊 Project Load Visualizer</title>
+<!-- ✅ Tom Select styles -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet" />
+<!-- ✅ Custom styles -->
 <link rel="stylesheet" href="style.css" />
-
+<!-- ✅ Chart.js for graphs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<!-- ✅ Tom Select script -->
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 </head>
-
 <body>
-
 <h1>📁 Project Load Visualizer</h1>
-
-<!-- PM & FY Filter Form -->
-
+<!-- 📥 Load Project Form -->
 <form id="filterForm">
-
-<label for="pmSelect">👥 Select Project Managers:</label> <!-- This helps you select the project managers chosen from a choice of who shows up.-->
-
-<input type="text" id="pmSelect" list="pmList" placeholder="Type to search Project Managers..." autocomplete="on" />
-<datalist id="pmList"></datalist>
-
+<label for="pmSelect">👥 Select Project Manager:</label>
+<select id="pmSelect" placeholder="Type to search..."></select>
 <label for="fySelect">📆 Select Fiscal Year:</label>
-
 <select id="fySelect"></select>
-
 <button type="submit">🔍 Load Projects</button>
-
 </form>
-
-<!-- Charts -->
-
+<!-- 📊 Charts -->
 <div class="charts">
-
 <canvas id="barChart"></canvas>
-
 <canvas id="pieChart"></canvas>
-
 </div>
-
-<!-- New Project Form -->
-
-<!-- (Same as before, just update the PM assign field) -->
+<!-- ➕ Create Project Form -->
 <form id="createForm">
 <h2>➕ Create New Project</h2>
 <input type="text" id="projectName" placeholder="New Project Name" required />
@@ -55,9 +36,7 @@
 <input type="text" id="pmAuto" readonly />
 <button type="submit">✅ Create Project</button>
 </form>
-
+<!-- ✅ Custom script -->
 <script src="script.js"></script>
-
 </body>
-
 </html>
