@@ -4,7 +4,7 @@ let selectedPM = "";        // Auto-selected PM
 const fySelect = document.getElementById('fySelect');
 const thisYear = new Date().getFullYear();
 for (let i = thisYear; i <= thisYear + 4; i++) {
- const label = `FY ${i % 100}/${(i + 1) % 100}`;
+ const label = `FY ${(i + 1) % 100}`;
  const start = `${i}-03-01`;
  const end = `${i + 1}-02-28`;
  const option = new Option(label, `${start},${end}`);

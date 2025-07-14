@@ -20,7 +20,7 @@ It fetches current projects assigned to selected Project Managers (PMs), analyze
 🚀 How It Works
 1. Filter Active Projects
     • User types a project manager name and it autofills (search box)
-    • Picks a Fiscal Year (e.g., FY26/27 = March 2026 to Feb 2027)
+    • Picks a Fiscal Year (e.g., FY27 = March 2026 to Feb 2027)
     • App fetches all active projects in that timeframe from PPM Express
 2. Analyze Workload
     • For each PM, the app calculates workload by summing the project durations (in weeks)
