@@ -10,13 +10,6 @@ for (let i = thisYear; i <= thisYear + 4; i++) {
  const option = new Option(label, `${start},${end}`);
  fySelect.appendChild(option);
 }
-// Populate PM dropdown
-const projectManagers = ["Sihle", "Doris", "Kabelo", "Nadine"];
-const pmSelect = document.getElementById("pmSelect");
-projectManagers.forEach(pm => {
- const opt = new Option(pm, pm);
- pmSelect.appendChild(opt);
-});
 // Load Projects & Analyze
 document.getElementById("filterForm").addEventListener("submit", async (e) => {
  e.preventDefault();
