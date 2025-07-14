@@ -1,33 +1,63 @@
 <!DOCTYPE html>
+ 
 <html lang="en">
+ 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Project Load Visualizer</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
+<meta charset="UTF-8" />
+ 
+<title>📊 Project Load Balancer</title>
+ 
+<link rel="stylesheet" href="style.css" />
+ 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
 </head>
+ 
 <body>
-  <div class="container">
-    <h1>Project Load Visualizer</h1>
-
-    <!-- Dropdowns -->
-    <div class="filters">
-      <select id="pmSelect" required>
-        <option value="">Select Project Manager</option>
-      </select>
-
-      <select id="fySelect" required>
-        <option value="">Select Fiscal Year</option>
-      </select>
-    </div>
-
-    <!-- Chart -->
-    <div class="chart-container">
-      <canvas id="projectPieChart" width="400" height="400"></canvas>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+ 
+<h1>📁 Project Load Visualizer</h1>
+ 
+<!-- PM & FY Filter Form -->
+ 
+<form id="filterForm">
+ 
+<label for="pmSelect">👥 Select Project Managers:</label> <!-- This helps you select the project managers chosen from a choice of who shows up.-->
+ 
+<input type="text" id="pmSelect" list="pmList" placeholder="Type to search Project Managers..." autocomplete="on" />
+<datalist id="pmList"></datalist>
+ 
+<label for="fySelect">📆 Select Fiscal Year:</label>
+ 
+<select id="fySelect"></select>
+ 
+<button type="submit">🔍 Load Projects</button>
+ 
+</form>
+ 
+<!-- Charts -->
+ 
+<div class="charts">
+ 
+<canvas id="barChart"></canvas>
+ 
+<canvas id="pieChart"></canvas>
+ 
+</div>
+ 
+<!-- New Project Form -->
+ 
+<!-- (Same as before, just update the PM assign field) -->
+<form id="createForm">
+<h2>➕ Create New Project</h2>
+<input type="text" id="projectName" placeholder="New Project Name" required />
+<label for="pmAuto">👤 Suggested PM:</label>
+<input type="text" id="pmAuto" readonly />
+<button type="submit">✅ Create Project</button>
+</form>
+ 
+<script src="script.js"></script>
+ 
 </body>
+ 
 </html>
