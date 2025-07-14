@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function () {
 const backendURL = "https://project-management-load-balancer.siphosihle-tsotsa.workers.dev";
 
 // Elements
@@ -106,3 +107,4 @@ fySelect.addEventListener("change", fetchAndRenderProjects);
 // 5️⃣ Init
 fetchPMs();
 buildFYOptions();
+});
