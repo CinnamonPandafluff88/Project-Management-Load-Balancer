@@ -10,6 +10,27 @@ for (let i = thisYear; i <= thisYear + 4; i++) {
  const option = new Option(label, `${start},${end}`);
  fySelect.appendChild(option);
 }
+const pmSelect = document.getElementById('pmSelect');
+const pmSearch = document.getElementById('pmSearch');
+
+// Fetch PMs and populate dropdown
+async function fetchPMs(search = "") {
+    const res = await fetch(`/api/pms?search=${encodeURIComponent(search)}`);
+    const pms = await res.json();
+    pmSelect.innerHTML = "";
+    pms.forEach(pm => {
+        const option = new Option(pm, pm);
+        pmSelect.appendChild(option);
+    });
+}
+
+// Initial load
+fetchPMs();
+
+// Search handler
+pmSearch.addEventListener("input", (e) => {
+    fetchPMs(e.target.value);
+});
 // Load Projects & Analyze
 document.getElementById("filterForm").addEventListener("submit", async (e) => {
  e.preventDefault();
