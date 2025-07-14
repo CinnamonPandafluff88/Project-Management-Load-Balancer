@@ -1,166 +1,71 @@
-/* styles.css */
-
 body {
 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+font-family: 'Segoe UI', sans-serif;
 
-  margin: 20px;
+padding: 2rem;
 
-  background: #f5f7fa;
+background-color: #f9f7fc;
 
-  color: #333;
-
-}
-
-h1, h2 {
-
-  color: #2c3e50;
+color: #333;
 
 }
 
-.filter-section,
+form {
 
-.new-project-section {
+background: #fff;
 
-  margin-bottom: 20px;
+padding: 1.5rem;
 
-  background: #fff;
+margin-bottom: 2rem;
 
-  padding: 15px 20px;
+border-radius: 10px;
 
-  border-radius: 8px;
-
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
 }
 
-.filter-section label,
+label, input, select, button {
 
-.new-project-section label {
+display: block;
 
-  margin-right: 10px;
+width: 100%;
 
-  font-weight: 600;
+margin-top: 0.5rem;
+
+margin-bottom: 1rem;
 
 }
 
-select,
+input, select {
 
-input[type="text"] {
+padding: 0.7rem;
 
-  padding: 6px 10px;
+border: 1px solid #ccc;
 
-  margin-right: 20px;
-
-  border: 1px solid #ccc;
-
-  border-radius: 4px;
-
-  min-width: 180px;
-
-  font-size: 1rem;
+border-radius: 6px;
 
 }
 
 button {
 
-  background-color: #3498db;
+background-color: #7d5bbe;
 
-  border: none;
+color: white;
 
-  padding: 8px 16px;
+padding: 0.8rem;
 
-  color: white;
+border: none;
 
-  font-weight: 600;
+border-radius: 6px;
 
-  border-radius: 4px;
-
-  cursor: pointer;
-
-  transition: background-color 0.3s ease;
+cursor: pointer;
 
 }
 
-button:hover {
+.charts {
 
-  background-color: #2980b9;
+max-width: 700px;
 
-}
-
-.status-message {
-
-  margin-bottom: 15px;
-
-  font-style: italic;
-
-  color: #34495e;
+margin: auto;
 
 }
-
-.projects-list {
-
-  background: #fff;
-
-  padding: 15px 20px;
-
-  border-radius: 8px;
-
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-
-  max-height: 250px;
-
-  overflow-y: auto;
-
-  margin-bottom: 20px;
-
-}
-
-.projects-list ul {
-
-  list-style: none;
-
-  padding-left: 0;
-
-}
-
-.projects-list li {
-
-  padding: 6px 0;
-
-  border-bottom: 1px solid #eee;
-
-  font-size: 0.95rem;
-
-}
-
-.charts-container {
-
-  display: flex;
-
-  justify-content: space-around;
-
-  flex-wrap: wrap;
-
-  gap: 30px;
-
-  margin-bottom: 30px;
-
-}
-
-canvas {
-
-  background: #fff;
-
-  border-radius: 8px;
-
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-
-  max-width: 400px;
-
-  width: 100%;
-
-  height: 400px;
-
-}
- 
