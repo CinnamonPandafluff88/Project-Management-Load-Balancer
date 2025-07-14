@@ -1,110 +1,142 @@
-document.addEventListener("DOMContentLoaded", function () {
 const backendURL = "https://project-management-load-balancer.siphosihle-tsotsa.workers.dev";
 
-// Elements
+// DOM elements
 const pmSelect = document.getElementById("pmSelect");
 const fySelect = document.getElementById("fySelect");
-const canvas = document.getElementById("projectPieChart");
-const ctx = canvas.getContext("2d");
+const barCanvas = document.getElementById("barChart");
+const pieCanvas = document.getElementById("pieChart");
+const createForm = document.getElementById("createForm");
+const pmAuto = document.getElementById("pmAuto");
 
-let pieChart;
+let barChart, pieChart;
 
-// 1️⃣ Fetch Project Managers
-async function fetchPMs() {
+// 🎯 1. Fetch PMs for filters and project creation
+async function loadPMs() {
   const res = await fetch(`${backendURL}/api/pms?search=`);
-  const data = await res.json();
-  pmSelect.innerHTML = '<option value="">Select Project Manager</option>';
+  const pms = await res.json();
 
-  data.forEach(pm => {
-    const option = document.createElement("option");
-    option.value = pm;
-    option.textContent = pm;
-    pmSelect.appendChild(option);
+  pmSelect.innerHTML = "";
+  pmAuto.innerHTML = "<option value=''>Select a PM</option>";
+
+  pms.forEach(pm => {
+    const opt1 = document.createElement("option");
+    opt1.value = pm;
+    opt1.textContent = pm;
+    pmSelect.appendChild(opt1);
+
+    const opt2 = document.createElement("option");
+    opt2.value = pm;
+    opt2.textContent = pm;
+    pmAuto.appendChild(opt2);
   });
 }
 
-// 2️⃣ Build FY Options (March–Feb)
-function buildFYOptions() {
-  const currentYear = new Date().getFullYear();
+function buildFYDropdown() {
+  const now = new Date();
+  const baseYear = now.getFullYear();
+
+  fySelect.innerHTML = "";
+
   for (let i = -1; i <= 2; i++) {
-    const start = new Date(currentYear + i, 2, 1);  // March 1
-    const end = new Date(currentYear + i + 1, 1, 28); // Feb 28
-    const label = `FY ${start.getFullYear()}/${end.getFullYear().toString().slice(-2)}`;
+    const fiscalStartYear = baseYear + i;
+    const fyLabel = `FY${(fiscalStartYear + 1).toString().slice(-2)}`; // FY26, FY27...
+
+    const start = new Date(fiscalStartYear, 2, 1);      // March 1
+    const end = new Date(fiscalStartYear + 1, 1, 28);   // Feb 28 of next year
+
     const option = document.createElement("option");
-    option.value = JSON.stringify({ start: start.toISOString(), end: end.toISOString() });
-    option.textContent = label;
+    option.value = JSON.stringify({
+      start: start.toISOString(),
+      end: end.toISOString()
+    });
+    option.textContent = fyLabel;
+
     fySelect.appendChild(option);
   }
 }
 
-// 3️⃣ Fetch Projects and Build Chart
-async function fetchAndRenderProjects() {
-  const selectedPM = pmSelect.value;
-  const fyRange = fySelect.value;
-
-  if (!selectedPM || !fyRange) return;
-
-  const { start, end } = JSON.parse(fyRange);
+// 📊 3. Fetch and render project data
+async function loadProjects(pmNames, dateRange) {
   const res = await fetch(`${backendURL}/api/projects`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      pmNames: [selectedPM],
-      start,
-      end,
-    }),
+    body: JSON.stringify({ pmNames, ...dateRange })
   });
 
-  const data = await res.json();
+  const projects = await res.json();
+  const countMap = {};
 
-  const projectCounts = {};
-  data.forEach(proj => {
+  projects.forEach(proj => {
     const owner = proj.owner || "Unassigned";
-    projectCounts[owner] = (projectCounts[owner] || 0) + 1;
+    countMap[owner] = (countMap[owner] || 0) + 1;
   });
 
-  const labels = Object.keys(projectCounts);
-  const values = Object.values(projectCounts);
-  const colors = labels.map((_, i) => `hsl(${i * 70}, 70%, 60%)`);
+  const labels = Object.keys(countMap);
+  const data = Object.values(countMap);
+  const colors = labels.map((_, i) => `hsl(${i * 60}, 70%, 60%)`);
 
   const chartData = {
     labels,
     datasets: [{
-      label: "Project Load",
-      data: values,
-      backgroundColor: colors,
-      borderColor: "#fff",
-      borderWidth: 2,
-    }],
+      label: "Projects",
+      data,
+      backgroundColor: colors
+    }]
   };
 
-  if (pieChart) {
-    pieChart.data = chartData;
-    pieChart.update();
-  } else {
-    pieChart = new Chart(ctx, {
-      type: "pie",
-      data: chartData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "bottom" },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.raw} project(s)`,
-            },
-          },
-        },
-      },
-    });
-  }
+  // Render bar chart
+  if (barChart) barChart.destroy();
+  barChart = new Chart(barCanvas.getContext("2d"), {
+    type: "bar",
+    data: chartData,
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Render pie chart
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(pieCanvas.getContext("2d"), {
+    type: "pie",
+    data: chartData,
+    options: { responsive: true }
+  });
 }
 
-// 4️⃣ Event Listeners
-pmSelect.addEventListener("change", fetchAndRenderProjects);
-fySelect.addEventListener("change", fetchAndRenderProjects);
+// 🔍 4. Form to load projects
+document.getElementById("filterForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const selectedPMs = Array.from(pmSelect.selectedOptions).map(opt => opt.value);
+  const fy = JSON.parse(fySelect.value);
+  loadProjects(selectedPMs, fy);
+});
 
-// 5️⃣ Init
-fetchPMs();
-buildFYOptions();
+// ✅ 5. Form to create a project
+createForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = document.getElementById("projectName").value;
+  const owner = pmAuto.value;
+
+  if (!name || !owner) return alert("Please provide both name and PM.");
+
+  const res = await fetch(`${backendURL}/api/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, owner })
+  });
+
+  if (res.ok) {
+    alert("✅ Project created successfully!");
+    createForm.reset();
+  } else {
+    alert("❌ Failed to create project.");
+  }
+});
+
+// 🚀 Init
+document.addEventListener("DOMContentLoaded", () => {
+  loadPMs();
+  buildFYDropdown();
 });

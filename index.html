@@ -1,66 +1,43 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8" />
-
-<title>📊 Project Load Balancer</title>
-
-<link rel="stylesheet" href="style.css" />
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <meta charset="UTF-8" />
+  <title>📊 Project Load Balancer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
-<h1>📁 Project Load Visualizer</h1>
+  <h1>📁 Project Load Visualizer</h1>
 
-<!-- PM & FY Filter Form -->
+  <!-- PM & FY Filter Form -->
+  <form id="filterForm">
+    <label for="pmSelect">👥 Select Project Managers:</label>
+    <select id="pmSelect" multiple></select>
 
-<form id="filterForm">
+    <label for="fySelect">📆 Select Fiscal Year:</label>
+    <select id="fySelect"></select>
 
-<label for="pmSelect">👥 Select Project Managers:</label>
+    <button type="submit">🔍 Load Projects</button>
+  </form>
 
-<select id="pmSelect" multiple></select>
+  <!-- Charts -->
+  <div class="charts">
+    <canvas id="barChart"></canvas>
+    <canvas id="pieChart"></canvas>
+  </div>
 
-<label for="fySelect">📆 Select Fiscal Year:</label>
+  <!-- New Project Form -->
+  <form id="createForm">
+    <h2>➕ Create New Project</h2>
+    <input type="text" id="projectName" placeholder="New Project Name" required />
 
-<select id="fySelect"></select>
+    <label for="pmAuto">👤 Assign to PM:</label>
+    <select id="pmAuto"></select>
 
-<button type="submit">🔍 Load Projects</button>
+    <button type="submit">✅ Create Project</button>
+  </form>
 
-</form>
-
-<!-- Charts -->
-
-<div class="charts">
-
-<canvas id="barChart"></canvas>
-
-<canvas id="pieChart"></canvas>
-
-</div>
-
-<!-- New Project Form -->
-
-<form id="createForm">
-
-<h2>➕ Create New Project</h2>
-
-<!-- (Same as before, just update the PM assign field) -->
-<form id="createForm">
-<h2>➕ Create New Project</h2>
-<input type="text" id="projectName" placeholder="New Project Name" required />
-<label for="pmAuto">👤 Suggested PM:</label>
-<input type="text" id="pmAuto" readonly />
-<button type="submit">✅ Create Project</button>
-</form>
-
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
-
 </html>
