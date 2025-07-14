@@ -72,7 +72,7 @@ function populateFiscalYears() {
  const currentYear = new Date().getFullYear() % 100;
  for (let i = currentYear - 2; i <= currentYear + 3; i++) {
    const next = (i + 1).toString().padStart(2, '0');
-   const label = `FY ${next}`;
+   const label = `FY ${i}/${next}`;
    const option = new Option(label, label);
    fySelect.appendChild(option);
  }
