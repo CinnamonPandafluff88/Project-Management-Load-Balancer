@@ -19,7 +19,7 @@ It fetches current projects assigned to selected Project Managers (PMs), analyze
 ⸻
 🚀 How It Works
 1. Filter Active Projects
-    • User selects Project Managers (multi-select dropdown)
+    • User types a project manager name and it autofills (search box)
     • Picks a Fiscal Year (e.g., FY26/27 = March 2026 to Feb 2027)
     • App fetches all active projects in that timeframe from PPM Express
 2. Analyze Workload
