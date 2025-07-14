@@ -1,42 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>📊 Project Load Visualizer</title>
-<!-- ✅ Tom Select styles -->
-<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet" />
-<!-- ✅ Custom styles -->
-<link rel="stylesheet" href="style.css" />
-<!-- ✅ Chart.js for graphs -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- ✅ Tom Select script -->
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-</head>
-<body>
-<h1>📁 Project Load Visualizer</h1>
-<!-- 📥 Load Project Form -->
-<form id="filterForm">
-<label for="pmSelect">👥 Select Project Manager:</label>
-<select id="pmSelect" placeholder="Type to search..."></select>
-<label for="fySelect">📆 Select Fiscal Year:</label>
-<select id="fySelect"></select>
-<button type="submit">🔍 Load Projects</button>
-</form>
-<!-- 📊 Charts -->
-<div class="charts">
-<canvas id="barChart"></canvas>
-<canvas id="pieChart"></canvas>
-</div>
-<!-- ➕ Create Project Form -->
-<form id="createForm">
-<h2>➕ Create New Project</h2>
-<input type="text" id="projectName" placeholder="New Project Name" required />
-<label for="pmAuto">👤 Suggested PM:</label>
-<input type="text" id="pmAuto" readonly />
-<button type="submit">✅ Create Project</button>
-</form>
-<!-- ✅ Custom script -->
-<script src="script.js"></script>
-</body>
-</html>
+const PROJECTS_API = "https://api-eu.ppm.express/api/v1/projects";
+const RESOURCES_API = "https://api-eu.ppm.express/@%40liquid/v1.0/resources";
+// 🔐 Shared CORS headers
+const corsHeaders = {
+ "Access-Control-Allow-Origin": "*",
+ "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+ "Access-Control-Allow-Headers": "Content-Type",
+};
+// 📦 Fetch filtered projects from PPM Express
+async function fetchProjects(pmNames, start, end, apiKey) {
+ const res = await fetch(PROJECTS_API, {
+   headers: { "Authorization": `Bearer ${apiKey}` }
+ });
+ const { value } = await res.json();
+ const filtered = value.filter(p => {
+   const name = p.OwnerName?.trim();
+   const startDate = new Date(p.StartDate);
+   return pmNames.includes(name) &&
+          startDate >= new Date(start) &&
+          startDate <= new Date(end);
+ });
+ return filtered;
+}
+// 📌 Create a new project
+async function createProject(name, owner, apiKey) {
+ const body = {
+   attributes: {
+     Name: name,
+     Owner: [{ search: owner }],
+     StartDate: new Date().toISOString(),
+     EndDate: new Date(Date.now() + 90 * 86400000).toISOString(),
+     OverallStatus: "Not Started"
+   }
+ };
+ const res = await fetch(PROJECTS_API, {
+   method: "POST",
+   headers: {
+     "Authorization": `Bearer ${apiKey}`,
+     "Content-Type": "application/json"
+   },
+   body: JSON.stringify(body)
+ });
+ const json = await res.json();
+ return {
+   name,
+   owner,
+   id: json.id
+ };
+}
+// 📋 Fetch list of unique PMs (resources)
+async function fetchPMList(apiKey, search = "") {
+ const res = await fetch(RESOURCES_API, {
+   headers: {
+     "Authorization": `Bearer ${apiKey}`,
+     "Accept": "application/json"
+   }
+ });
+ const { value } = await res.json();
+ if (!value || !Array.isArray(value)) {
+   console.log("⚠️ No resource values returned.");
+   return [];
+ }
+ const uniquePMs = Array.from(
+   new Set(
+     value
+       .map(r => r.Name?.trim())
+       .filter(name => name && name.toLowerCase().includes(search.toLowerCase()))
+   )
+ );
+ console.log(`🔍 Found ${uniquePMs.length} PMs matching: "${search}"`);
+ return uniquePMs;
+}
+// 🌐 Cloudflare Worker entry point
+export default {
+ async fetch(request, env, ctx) {
+   const url = new URL(request.url);
+   const apiKey = env.api_ppm;
+   // ✅ CORS preflight
+   if (request.method === "OPTIONS") {
+     return new Response("OK", { headers: corsHeaders });
+   }
+   try {
+     // 📁 POST /api/projects
+     if (url.pathname === "/api/projects" && request.method === "POST") {
+       const { pmNames, start, end } = await request.json();
+       const data = await fetchProjects(pmNames, start, end, apiKey);
+       return new Response(JSON.stringify(data), {
+         headers: { "Content-Type": "application/json", ...corsHeaders }
+       });
+     }
+     // ✅ POST /api/create
+     if (url.pathname === "/api/create" && request.method === "POST") {
+       const { name, owner } = await request.json();
+       const created = await createProject(name, owner, apiKey);
+       return new Response(JSON.stringify(created), {
+         headers: { "Content-Type": "application/json", ...corsHeaders }
+       });
+     }
+     // 🔍 GET /api/pms?search=name
+     if (url.pathname === "/api/pms" && request.method === "GET") {
+       const search = url.searchParams.get("search") || "";
+       const pms = await fetchPMList(apiKey, search);
+       return new Response(JSON.stringify(pms), {
+         headers: { "Content-Type": "application/json", ...corsHeaders }
+       });
+     }
+     // 🟢 Default route
+     return new Response("Working ✅", {
+       status: 200,
+       headers: { "Content-Type": "text/plain", ...corsHeaders }
+     });
+   } catch (err) {
+     console.error("❌ Worker error:", err.message);
+     return new Response("Internal Server Error", {
+       status: 500,
+       headers: { ...corsHeaders }
+     });
+   }
+ }
+};
