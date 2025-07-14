@@ -4,20 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📊 Project Load Visualizer</title>
-
-  <!-- ✅ Tom Select styles -->
   https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css
-  <!-- ✅ Custom styles -->
   <link rel="stylesheet" href="style.css" />
-  <!-- ✅ Chart.js for graphs -->
   https://cdn.jsdelivr.net/npm/chart.js
-  <!-- ✅ Tom Select script -->
   https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js
 </head>
 <body>
   <h1>📁 Project Load Visualizer</h1>
 
-  <!-- 📥 Load Project Form -->
   <form id="filterForm" class="filter-section">
     <label for="pmSelect">👥 Select Project Manager:</label>
     <select id="pmSelect" placeholder="Type to search..."></select>
@@ -28,30 +22,22 @@
     <button type="submit">🔍 Load Projects</button>
   </form>
 
-  <!-- 📊 Charts -->
   <div class="charts-container">
     <canvas id="workloadBarChart"></canvas>
     <canvas id="workloadPieChart"></canvas>
   </div>
 
-  <!-- 📋 Project List -->
   <div id="projectsContainer" class="projects-container"></div>
-
-  <!-- ℹ️ Status Message -->
   <div id="statusMessage" class="status-message"></div>
 
-  <!-- ➕ Create Project Form -->
   <form id="createForm" class="new-project-section">
     <h2>➕ Create New Project</h2>
     <input type="text" id="newProjectName" placeholder="New Project Name" required />
-
     <label for="newProjectPmSelect">👤 Assign to PM:</label>
     <select id="newProjectPmSelect"></select>
-
     <button type="button" id="createProjectBtn">✅ Create Project</button>
   </form>
 
-  <!-- ✅ Custom script -->
   <script src="script.js"></script>
 </body>
 </html>
