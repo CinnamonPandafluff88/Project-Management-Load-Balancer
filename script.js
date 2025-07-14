@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const API_BASE = "https://project-management-load-balancer.siphosihle-tsotsa.workers.dev";
+
   let currentWorkloads = {};
   let selectedPM = "";
 
@@ -15,12 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const pmInput = document.getElementById('pmSelect');
   const pmList = document.getElementById('pmList');
 
-  // Optional: fetchPMs if you add /api/pms to your Worker
   async function fetchPMs(search = "") {
     try {
-      const res = await fetch(`/api/pms?search=${encodeURIComponent(search)}`);
+      const res = await fetch(`${API_BASE}/api/pms?search=${encodeURIComponent(search)}`);
       if (!res.ok) throw new Error("PMs not found");
       const pms = await res.json();
+
       pmList.innerHTML = "";
       pms.forEach(pm => {
         const option = document.createElement("option");
@@ -32,8 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Initial load (optional)
-  // fetchPMs();
+  pmInput.addEventListener("input", (e) => {
+    fetchPMs(e.target.value);
+  });
 
   document.getElementById("filterForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -41,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const [start, end] = fySelect.value.split(',');
 
     try {
-      const res = await fetch("/api/projects", {
+      const res = await fetch(`${API_BASE}/api/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pmNames, start, end })
@@ -84,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = document.getElementById("projectName").value;
 
     try {
-      const res = await fetch("/api/create", {
+      const res = await fetch(`${API_BASE}/api/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, owner: selectedPM })
