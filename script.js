@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModal = document.getElementById('closeModal');
   const assignedManagerText = document.getElementById('assignedManager');
 
-  // 🌐 Your deployed Worker URL
-  const WORKER_URL = 'https://project-management-load-balancer.siphosihle-tsotsa.workers.dev/resources'; // 🔁 Replace with your actual Worker URL
+  // ✅ Your deployed Worker endpoint
+  const WORKER_URL = 'https://project-management-load-balancer.siphosihle-tsotsa.workers.dev/resources';
 
-  // 🌐 Load project managers and best PM
+  // 🌐 Load project managers
   async function loadManagers() {
     try {
       const res = await fetch(WORKER_URL);
@@ -17,22 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await res.json();
-      const { managers, bestPM } = data;
 
-      if (!Array.isArray(managers)) {
-        throw new Error("Response 'managers' is not an array");
+      if (!Array.isArray(data)) {
+        throw new Error("Response is not an array");
       }
 
       managersSelect.innerHTML = ""; // Clear existing options
-      managers.forEach(pm => {
+      data.forEach(pm => {
         const option = document.createElement('option');
         option.value = pm;
         option.textContent = pm;
         managersSelect.appendChild(option);
       });
-
-      // Pre-fill the best PM in the popup (optional)
-      assignedManagerText.textContent = `Best PM (based on workload): ${bestPM}`;
 
     } catch (err) {
       alert('❌ Failed to load project managers.');
@@ -50,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const result = await res.json();
-      assignedManagerText.textContent = `Assigned to: ${result.bestPM}`;
+      assignedManagerText.textContent = `Assigned to: ${result.bestPM || 'Unknown'}`;
       popup.classList.remove('hidden');
     } catch (err) {
       alert('❌ Could not assign project manager.');
