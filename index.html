@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Project Management Assigner</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Management Assigner</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-<h1>Project Management Assigner</h1>
-<form id="assignForm">
-<label for="managers">Select Project Managers:</label>
-<select id="managers" multiple></select>
-<label for="projectName">New Project Name:</label>
-<input type="text" id="projectName" required />
-<label for="startDate">Start Date:</label>
-<input type="date" id="startDate" required />
-<label for="finishDate">Finish Date:</label>
-<input type="date" id="finishDate" required />
-<button type="submit">Assign</button>
-</form>
-</div>
-<div id="popup" class="modal hidden">
-<div class="modal-content">
-<span id="closeModal">&times;</span>
-<p id="assignedManager"></p>
-</div>
-</div>
-<script src="script.js"></script>
+  <div class="container">
+    <h1>Project Management Assigner</h1>
+    <form id="assignForm">
+      <label for="managers">Select Project Managers:</label>
+      <select id="managers" multiple></select>
+
+      <label for="projectName">New Project Name:</label>
+      <input type="text" id="projectName" required />
+
+      <labelstartDate">Start Date:</label>
+      <input type="date" id="startDate" required />
+
+      <label for="finishDate">Finish Date:</label>
+      <input type="date" id="finishDate" required />
+
+      <button type="submit">Assign</button>
+    </form>
+  </div>
+
+  <div id="popup" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <p id="assignedManager"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
