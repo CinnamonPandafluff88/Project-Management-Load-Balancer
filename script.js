@@ -5,40 +5,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModal = document.getElementById('closeModal');
   const assignedManagerText = document.getElementById('assignedManager');
 
-  // 🌐 Load project managers
+  // 🌐 Your deployed Worker URL
+  const WORKER_URL = 'https://dash.cloudflare.com/db74e65878c557d9b20b5421cf5a0fd4/workers/services/view/project-management-load-balancer/production'; // 🔁 Replace with your actual Worker URL
+
+  // 🌐 Load project managers and best PM
   async function loadManagers() {
     try {
-      const res = await fetch('/api/managers');
+      const res = await fetch(WORKER_URL);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${await res.text()}`);
       }
-      const managers = await res.json();
+
+      const data = await res.json();
+      const { managers, bestPM } = data;
+
       if (!Array.isArray(managers)) {
-        throw new Error("Response is not an array");
+        throw new Error("Response 'managers' is not an array");
       }
+
       managersSelect.innerHTML = ""; // Clear existing options
       managers.forEach(pm => {
         const option = document.createElement('option');
-        option.value = pm.name;
-        option.textContent = pm.name;
+        option.value = pm;
+        option.textContent = pm;
         managersSelect.appendChild(option);
       });
+
+      // Pre-fill the best PM in the popup (optional)
+      assignedManagerText.textContent = `Best PM (based on workload): ${bestPM}`;
+
     } catch (err) {
       alert('❌ Failed to load project managers.');
       console.error("❌ loadManagers error:", err);
     }
   }
 
-  // 📤 Assign project manager
+  // 📤 Assign project manager (simulated logic)
   form.addEventListener('submit', async e => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/assign');
+      const res = await fetch(WORKER_URL);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${await res.text()}`);
       }
+
       const result = await res.json();
-      assignedManagerText.textContent = `Assigned to: ${result.managerName}`;
+      assignedManagerText.textContent = `Assigned to: ${result.bestPM}`;
       popup.classList.remove('hidden');
     } catch (err) {
       alert('❌ Could not assign project manager.');
