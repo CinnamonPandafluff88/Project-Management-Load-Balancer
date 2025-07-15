@@ -1,43 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>📊 Project Load Balancer</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Project Management Assigner</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <h1>📁 Project Load Visualizer</h1>
-
-  <!-- PM & FY Filter Form -->
-  <form id="filterForm">
-    <label for="pmSelect">👥 Select Project Managers:</label>
-    <select id="pmSelect" multiple></select>
-
-    <label for="fySelect">📆 Select Fiscal Year:</label>
-    <select id="fySelect"></select>
-
-    <button type="submit">🔍 Load Projects</button>
-  </form>
-
-  <!-- Charts -->
-  <div class="charts">
-    <canvas id="barChart"></canvas>
-    <canvas id="pieChart"></canvas>
-  </div>
-
-  <!-- New Project Form -->
-  <form id="createForm">
-    <h2>➕ Create New Project</h2>
-    <input type="text" id="projectName" placeholder="New Project Name" required />
-
-    <label for="pmAuto">👤 Assign to PM:</label>
-    <select id="pmAuto"></select>
-
-    <button type="submit">✅ Create Project</button>
-  </form>
-
-  <script src="script.js"></script>
+<div class="container">
+<h1>Project Management Assigner</h1>
+<form id="assignForm">
+<label for="managers">Select Project Managers:</label>
+<select id="managers" multiple></select>
+<label for="projectName">New Project Name:</label>
+<input type="text" id="projectName" required />
+<label for="startDate">Start Date:</label>
+<input type="date" id="startDate" required />
+<label for="finishDate">Finish Date:</label>
+<input type="date" id="finishDate" required />
+<button type="submit">Assign</button>
+</form>
+</div>
+<div id="popup" class="modal hidden">
+<div class="modal-content">
+<span id="closeModal">&times;</span>
+<p id="assignedManager"></p>
+</div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>

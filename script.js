@@ -1,142 +1,84 @@
-const backendURL = "https://project-management-load-balancer.siphosihle-tsotsa.workers.dev";
+document.addEventListener('DOMContentLoaded', () => {
 
-// DOM elements
-const pmSelect = document.getElementById("pmSelect");
-const fySelect = document.getElementById("fySelect");
-const barCanvas = document.getElementById("barChart");
-const pieCanvas = document.getElementById("pieChart");
-const createForm = document.getElementById("createForm");
-const pmAuto = document.getElementById("pmAuto");
+  const form = document.getElementById('assignForm');
 
-let barChart, pieChart;
+  const managersSelect = document.getElementById('managers');
 
-// 🎯 1. Fetch PMs for filters and project creation
-async function loadPMs() {
-  const res = await fetch(`${backendURL}/api/pms?search=`);
-  const pms = await res.json();
+  const popup = document.getElementById('popup');
 
-  pmSelect.innerHTML = "";
-  pmAuto.innerHTML = "<option value=''>Select a PM</option>";
+  const closeModal = document.getElementById('closeModal');
 
-  pms.forEach(pm => {
-    const opt1 = document.createElement("option");
-    opt1.value = pm;
-    opt1.textContent = pm;
-    pmSelect.appendChild(opt1);
+  const assignedManagerText = document.getElementById('assignedManager');
 
-    const opt2 = document.createElement("option");
-    opt2.value = pm;
-    opt2.textContent = pm;
-    pmAuto.appendChild(opt2);
-  });
-}
+  // 🌐 Fetch project managers on load
 
-function buildFYDropdown() {
-  const now = new Date();
-  const baseYear = now.getFullYear();
+  async function loadManagers() {
 
-  fySelect.innerHTML = "";
+    try {
 
-  for (let i = -1; i <= 2; i++) {
-    const fiscalStartYear = baseYear + i;
-    const fyLabel = `FY${(fiscalStartYear + 1).toString().slice(-2)}`; // FY26, FY27...
+      const res = await fetch('/api/managers');
 
-    const start = new Date(fiscalStartYear, 2, 1);      // March 1
-    const end = new Date(fiscalStartYear + 1, 1, 28);   // Feb 28 of next year
+      const managers = await res.json();
 
-    const option = document.createElement("option");
-    option.value = JSON.stringify({
-      start: start.toISOString(),
-      end: end.toISOString()
-    });
-    option.textContent = fyLabel;
+      managers.forEach(pm => {
 
-    fySelect.appendChild(option);
-  }
-}
+        const option = document.createElement('option');
 
-// 📊 3. Fetch and render project data
-async function loadProjects(pmNames, dateRange) {
-  const res = await fetch(`${backendURL}/api/projects`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ pmNames, ...dateRange })
-  });
+        option.value = pm.name;
 
-  const projects = await res.json();
-  const countMap = {};
+        option.textContent = pm.name;
 
-  projects.forEach(proj => {
-    const owner = proj.owner || "Unassigned";
-    countMap[owner] = (countMap[owner] || 0) + 1;
-  });
+        managersSelect.appendChild(option);
 
-  const labels = Object.keys(countMap);
-  const data = Object.values(countMap);
-  const colors = labels.map((_, i) => `hsl(${i * 60}, 70%, 60%)`);
+      });
 
-  const chartData = {
-    labels,
-    datasets: [{
-      label: "Projects",
-      data,
-      backgroundColor: colors
-    }]
-  };
+    } catch (err) {
 
-  // Render bar chart
-  if (barChart) barChart.destroy();
-  barChart = new Chart(barCanvas.getContext("2d"), {
-    type: "bar",
-    data: chartData,
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+      alert('Failed to load project managers.');
+
+      console.error(err);
+
     }
-  });
 
-  // Render pie chart
-  if (pieChart) pieChart.destroy();
-  pieChart = new Chart(pieCanvas.getContext("2d"), {
-    type: "pie",
-    data: chartData,
-    options: { responsive: true }
-  });
-}
-
-// 🔍 4. Form to load projects
-document.getElementById("filterForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const selectedPMs = Array.from(pmSelect.selectedOptions).map(opt => opt.value);
-  const fy = JSON.parse(fySelect.value);
-  loadProjects(selectedPMs, fy);
-});
-
-// ✅ 5. Form to create a project
-createForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = document.getElementById("projectName").value;
-  const owner = pmAuto.value;
-
-  if (!name || !owner) return alert("Please provide both name and PM.");
-
-  const res = await fetch(`${backendURL}/api/create`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, owner })
-  });
-
-  if (res.ok) {
-    alert("✅ Project created successfully!");
-    createForm.reset();
-  } else {
-    alert("❌ Failed to create project.");
   }
-});
 
-// 🚀 Init
-document.addEventListener("DOMContentLoaded", () => {
-  loadPMs();
-  buildFYDropdown();
+  // 📤 Handle form submission
+
+  form.addEventListener('submit', async e => {
+
+    e.preventDefault();
+
+    try {
+
+      const res = await fetch('/api/assign');
+
+      const result = await res.json();
+
+      assignedManagerText.textContent = `Assigned to: ${result.managerName}`;
+
+      popup.classList.remove('hidden');
+
+    } catch (err) {
+
+      alert('Could not assign project manager.');
+
+      console.error(err);
+
+    }
+
+  });
+
+  // ❌ Close popup
+
+  closeModal.addEventListener('click', () => {
+
+    popup.classList.add('hidden');
+
+  });
+
+  // ⏬ Init
+
+  loadManagers();
+
 });
+ 
