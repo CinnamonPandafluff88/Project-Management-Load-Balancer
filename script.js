@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const assignedManagerText = document.getElementById('assignedManager');
 
   // 🌐 Your deployed Worker URL
-  const WORKER_URL = 'https://project-management-load-balancer.siphosihle-tsotsa.workers.dev/managers'; // 🔁 Replace with your actual Worker URL
+  const WORKER_URL = 'https://project-management-load-balancer.siphosihle-tsotsa.workers.dev'; // 🔁 Replace with your actual Worker URL
 
   // 🌐 Load project managers and best PM
   async function loadManagers() {
