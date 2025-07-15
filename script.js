@@ -12,35 +12,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 🌐 Fetch project managers on load
 
-  async function loadManagers() {
-
-    try {
-
-      const res = await fetch('/api/managers');
-
-      const managers = await res.json();
-
-      managers.forEach(pm => {
-
-        const option = document.createElement('option');
-
-        option.value = pm.name;
-
-        option.textContent = pm.name;
-
-        managersSelect.appendChild(option);
-
-      });
-
-    } catch (err) {
-
-      alert('Failed to load project managers.');
-
-      console.error(err);
-
-    }
-
-  }
+ async function loadManagers() {
+ try {
+   const res = await fetch('/api/managers');
+   if (!res.ok) {
+     throw new Error(`HTTP error! status: ${res.status}`);
+   }
+   const managers = await res.json();
+   managers.forEach(pm => {
+     const option = document.createElement('option');
+     option.value = pm.name;
+     option.textContent = pm.name;
+     managersSelect.appendChild(option);
+   });
+ } catch (err) {
+   alert('Failed to load project managers.');
+   console.error("❌ loadManagers error:", err);
+ }
+}
 
   // 📤 Handle form submission
 
