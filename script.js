@@ -83,24 +83,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('assignForm').addEventListener('submit', e => {
-    e.preventDefault();
+document.getElementById('assignForm').addEventListener('submit', e => {
+  e.preventDefault();
 
-    if (selectedManagers.length < 2) {
-      alert("Please select at least 2 project managers before assigning.");
-      return;
+  if (selectedManagers.length < 2) {
+    alert("Please select at least 2 project managers before assigning.");
+    return;
+  }
+
+  const candidates = allProjectStats.filter(p =>
+    selectedManagers.includes(p.name)
+  );
+
+  candidates.sort((a, b) => a.allocationWeight - b.allocationWeight);
+  const bestPM = candidates[0]?.name || "Unknown";
+
+  assignedManagerText.textContent = `Assigned to: ${bestPM}`;
+  popup.classList.remove('hidden');
+
+  // 🌈 Rainbow trail
+  const duration = 3 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
     }
 
-    const candidates = allProjectStats.filter(p =>
-      selectedManagers.includes(p.name)
-    );
+    const particleCount = 50 * (timeLeft / duration);
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: {
+        x: randomInRange(0.1, 0.9),
+        y: Math.random() - 0.2
+      },
+      colors: ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7']
+    });
+  }, 250);
 
-    candidates.sort((a, b) => a.allocationWeight - b.allocationWeight);
-    const bestPM = candidates[0]?.name || "Unknown";
-
-    assignedManagerText.textContent = `Assigned to: ${bestPM}`;
-    popup.classList.remove('hidden');
+  // 🎉 Emoji burst
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    shapes: ['circle'],
+    scalar: 1.2,
+    emojis: ['🎉', '✨', '💖', '🌈', '💫', '🎊']
   });
+});
 
   closeModal.addEventListener('click', () => {
     popup.classList.add('hidden');
