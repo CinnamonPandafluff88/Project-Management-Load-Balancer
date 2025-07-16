@@ -130,12 +130,23 @@ document.getElementById('assignForm').addEventListener('submit', e => {
   }, 250);
 
   // 🎉 Emoji burst using js-confetti
-  const jsConfetti = new JSConfetti();
+const jsConfetti = new JSConfetti();
+
+// 🎉 Repeat emoji bursts every 500ms for 3 seconds
+let emojiBurstCount = 0;
+const emojiBurstInterval = setInterval(() => {
   jsConfetti.addConfetti({
     emojis: ['🎉', '✨', '💖', '🌈', '💫', '🎊'],
     emojiSize: 40,
-    confettiNumber: 60,
+    confettiNumber: 30,
   });
+
+  emojiBurstCount++;
+  if (emojiBurstCount >= 6) { // 6 bursts = 3 seconds
+    clearInterval(emojiBurstInterval);
+  }
+}, 500);
+
 });
 
   closeModal.addEventListener('click', () => {
