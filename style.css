@@ -2,29 +2,59 @@
  box-sizing: border-box;
 }
 body {
- font-family: 'Segoe UI', sans-serif;
+ font-family: 'Montserrat', sans-serif;
  margin: 0;
  padding: 0;
 background-image: linear-gradient( to right,#001D58, #273c88,#4e96c7, #ffffff );
 }
 .container {
- max-width: 600px;
+ max-width: 1200px;
  margin: auto;
  padding: 2rem;
  background: #bed8e9;
- margin-top: 5vh;
+ margin-top: 10vh;
  border-radius: 8px;
  box-shadow: 10px 15px rgba(0, 0, 0, 0.1);
 }
-h1 {
- text-align: center;
- margin-bottom: 1.5rem;
-color: black;
+h1
+{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #ff6ec4, #7873f5, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-top: 40px;
+  animation: popIn 1s ease-out;
+}
+
+h2
+{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #ac30d2, #6bbbf0, #28569b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-top: 40px;
+  animation: popIn 1s ease-out;
 }
 label {
- display: block;
- margin-top: 1rem;
- font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  display: block;
+  color: #001D58;
+  margin-top: 1rem;
+  font-weight: bold;
+  text-shadow: 3px 4px 6px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+  text-align: left;
+  margin-top: 40px;
+  animation: popIn 1s ease-out;
 }
 select,
 input,
