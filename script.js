@@ -101,34 +101,6 @@ document.getElementById('assignForm').addEventListener('submit', e => {
   assignedManagerText.textContent = `Assigned to: ${bestPM}`;
   popup.classList.remove('hidden');
 
-  // 🌈 Rainbow trail
-  const duration = 3 * 1000;
-  const animationEnd = Date.now() + duration;
-  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
-
-  function randomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  const interval = setInterval(() => {
-    const timeLeft = animationEnd - Date.now();
-
-    if (timeLeft <= 0) {
-      return clearInterval(interval);
-    }
-
-    const particleCount = 50 * (timeLeft / duration);
-    confetti({
-      ...defaults,
-      particleCount,
-      origin: {
-        x: randomInRange(0.1, 0.9),
-        y: Math.random() - 0.2
-      },
-      colors: ['#ff0adeff', '#47e3ffff', '#d270ffff', '#94562dff', '#fbb1bd', '#f9bec7']
-    });
-  }, 250);
-
   // 🎉 Emoji burst using js-confetti
 const jsConfetti = new JSConfetti();
 
