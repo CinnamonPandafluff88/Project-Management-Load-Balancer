@@ -125,18 +125,16 @@ document.getElementById('assignForm').addEventListener('submit', e => {
         x: randomInRange(0.1, 0.9),
         y: Math.random() - 0.2
       },
-      colors: ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7']
+      colors: ['#ff0adeff', '#47e3ffff', '#d270ffff', '#94562dff', '#fbb1bd', '#f9bec7']
     });
   }, 250);
 
-  // 🎉 Emoji burst
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 },
-    shapes: ['circle'],
-    scalar: 1.2,
-    emojis: ['🎉', '✨', '💖', '🌈', '💫', '🎊']
+  // 🎉 Emoji burst using js-confetti
+  const jsConfetti = new JSConfetti();
+  jsConfetti.addConfetti({
+    emojis: ['🎉', '✨', '💖', '🌈', '💫', '🎊'],
+    emojiSize: 40,
+    confettiNumber: 60,
   });
 });
 
