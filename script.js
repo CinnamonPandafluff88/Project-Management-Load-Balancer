@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         managersSelect.appendChild(option);
       });
 
+      
+      console.log("✅ Managers loaded:", data);
     } catch (err) {
       alert('❌ Failed to load project managers.');
       console.error("❌ loadManagers error:", err);
