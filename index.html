@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Management Assigner</title>
+  https://cdn.jsdeliver.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +12,7 @@
     <h1>Project Management Assigner</h1>
     <form id="assignForm">
       <label for="managers">Select Project Managers:</label>
-      <select id="managers" multiple></select>
+        <select id="managers" multiple="multiple" style="width: 100%;"></select>
 
       <label for="projectName">New Project Name:</label>
       <input type="text" id="projectName" required />
@@ -22,16 +23,46 @@
       <label for="finishDate">Finish Date:</label>
       <input type="date" id="finishDate" required />
 
+      
+<label for="filterYear">Filter by Year:</label>
+      <select id="filterYear">
+        <option value="">All Years</option>
+      </select>
+
+      <label for="filterMonth">Filter by Month:</label>
+      <select id="filterMonth">
+        <option value="">All Months</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+
       <button type="submit">Assign</button>
     </form>
   </div>
 
   <div id="popup" class="modal hidden">
-    <div class="modal-content">
-      <span id="closeModal">&times;</span>
+    
+  <div class=" <span id="closeModal">&times;</span>
+
+
       <p id="assignedManager"></p>
     </div>
   </div>
+
+  
+    https://code.jquery.com/jquery-3.6.0.min.js
+   https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js
+
 
   <script src="script.js"></script>
 </body>
