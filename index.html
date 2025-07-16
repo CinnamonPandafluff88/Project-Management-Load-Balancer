@@ -10,12 +10,11 @@
   <div class="container">
     <h1>Project Management Assigner</h1>
     <form id="assignForm">
-      <label for="managers">Select Project Managers:</label>
-          <select id="managers" multiple></select>
-
-      <h2>Projects per manager</h2>
-       <div id="projectDisplay"></div>
-
+    <label for="managerSearch">Select Project Managers:</label>
+      <div class="custom-dropdown">
+        <input type="text" id="managerSearch" placeholder="Select Project Managers" autocomplete="off" />
+        <ul id="dropdownList" class="dropdown-list hidden"></ul>
+      </div>
        <!-- Filter by Year and Month side by side -->
 <div class="row">
   <div class="form-group">
