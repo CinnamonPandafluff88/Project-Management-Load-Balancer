@@ -5,24 +5,21 @@ body {
  font-family: 'Segoe UI', sans-serif;
  margin: 0;
  padding: 0;
- background-color: #f8f9fa;
+background-image: linear-gradient( to right,#001D58, #273c88,#4e96c7, #ffffff );
 }
 .container {
  max-width: 600px;
  margin: auto;
  padding: 2rem;
- background: #fff;
+ background: #bed8e9;
  margin-top: 5vh;
  border-radius: 8px;
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ box-shadow: 10px 15px rgba(0, 0, 0, 0.1);
 }
-header h1 {
-  font-size: 70px;
-  font-weight: 600;
-  background-image: linear-gradient(to left, #553c9a, #b393d3);
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
+h1 {
+ text-align: center;
+ margin-bottom: 1.5rem;
+color: black;
 }
 label {
  display: block;
@@ -40,14 +37,16 @@ button {
 }
 button {
  margin-top: 1.5rem;
- background-color: #007bff;
+ background-color: #001D58;
  color: white;
- font-size: 1rem;
+ font-size: 2rem;
  border: none;
  cursor: pointer;
+ box-shadow: #001D58 0px 5px 15px -3px, #001D58 0px 6px 6px -4px;
 }
 button:hover {
- background-color: #0056b3;
+ background-color: #8dd3e9;
+ transition: 0.7s;
 }
 /* Modal Styles */
 .modal {
